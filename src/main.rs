@@ -4,10 +4,11 @@ use std::{
 };
 
 use camera::ASPECT_RATIO;
-use color::{BLUE, RED, WHITE};
+use color::{BLACK, BLUE, RED, WHITE};
 use constants::INFINITY;
 use hittable::Hittable;
 use ray::Ray;
+use utils::random_in_unit_sphere;
 
 use crate::{
     camera::Camera,
@@ -22,6 +23,7 @@ const IMAGE_WIDTH: usize = 400;
 const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as usize;
 const MAX_COLOR: usize = 255;
 const SAMPLES_PER_PIXERL: usize = 100;
+const MAX_DEPTH: usize = 50;
 
 mod camera;
 mod color;
@@ -33,9 +35,22 @@ mod sphere;
 mod utils;
 mod vec3;
 
-fn ray_color(ray: &Ray, world: Rc<dyn Hittable>) -> Color {
+fn ray_color(ray: &Ray, world: Rc<dyn Hittable>, depth: usize) -> Color {
+    if depth == 0 {
+        return BLACK;
+    }
+
     if let Some(res) = world.hit(ray, 0.0, INFINITY) {
-        return res.get_normal().add(&WHITE).divide_constant(2.0);
+        let target = res
+            .get_point()
+            .add(&res.get_normal())
+            .add(&random_in_unit_sphere());
+        return ray_color(
+            &Ray::new(res.get_point(), target.subtract(&res.get_point())),
+            world,
+            depth - 1,
+        )
+        .divide_constant(2.0);
     }
 
     let unit_direction = ray.get_direction().unit_vector();
@@ -66,7 +81,7 @@ fn main() {
                 let u = (j as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64;
                 let v = (i as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64;
                 let ray = camera.get_ray(u, v);
-                let pixel = ray_color(&ray, Rc::clone(&world));
+                let pixel = ray_color(&ray, Rc::clone(&world), MAX_DEPTH);
 
                 color.add(&pixel);
             }

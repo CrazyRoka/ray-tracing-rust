@@ -35,9 +35,9 @@ fn color_to_i(color: f64) -> usize {
 impl Display for MultipleSamplesColor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let scale = 1.0 / self.samples_count as f64;
-        let r = self.color_sum.get_x() * scale;
-        let g = self.color_sum.get_y() * scale;
-        let b = self.color_sum.get_z() * scale;
+        let r = (self.color_sum.get_x() * scale).sqrt();
+        let g = (self.color_sum.get_y() * scale).sqrt();
+        let b = (self.color_sum.get_z() * scale).sqrt();
 
         write!(f, "{} {} {}", color_to_i(r), color_to_i(g), color_to_i(b))
     }
