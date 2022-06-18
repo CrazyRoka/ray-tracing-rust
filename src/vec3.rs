@@ -1,3 +1,5 @@
+const EPS: f64 = 1e-8;
+
 #[derive(Clone, Copy)]
 pub struct Vec3 {
     x: f64,
@@ -68,6 +70,10 @@ impl Vec3 {
 
     pub fn unit_vector(&self) -> Self {
         self.divide_constant(self.length())
+    }
+
+    pub fn near_zero(&self) -> bool {
+        self.x.abs() < EPS && self.y.abs() < EPS && self.z.abs() < EPS
     }
 }
 

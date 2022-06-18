@@ -1,4 +1,10 @@
+use std::{
+    cell::{Cell, RefCell},
+    rc::Rc,
+};
+
 use crate::{
+    material::Material,
     ray::Ray,
     vec3::{Point3, Vec3},
 };
@@ -7,17 +13,29 @@ pub struct HitRecord {
     point: Point3,
     normal: Vec3,
     t: f64,
+    material: Rc<dyn Material>,
 }
 
 impl HitRecord {
-    pub fn new(point: Point3, outward_normal: Vec3, t: f64, ray: &Ray) -> Self {
+    pub fn new(
+        point: Point3,
+        outward_normal: Vec3,
+        t: f64,
+        ray: &Ray,
+        material: Rc<dyn Material>,
+    ) -> Self {
         let front_face = ray.get_direction().dot(&outward_normal) < 0.0;
         let normal = if front_face {
             outward_normal
         } else {
             outward_normal.negative()
         };
-        Self { point, normal, t }
+        Self {
+            point,
+            normal,
+            t,
+            material,
+        }
     }
 
     pub fn get_point(&self) -> Point3 {
@@ -30,6 +48,10 @@ impl HitRecord {
 
     pub fn get_t(&self) -> f64 {
         self.t
+    }
+
+    pub fn get_material(&self) -> Rc<dyn Material> {
+        Rc::clone(&self.material)
     }
 }
 

@@ -1,18 +1,24 @@
-use std::ops::RangeBounds;
+use std::{ops::RangeBounds, rc::Rc};
 
 use crate::{
     hittable::{HitRecord, Hittable},
+    material::Material,
     vec3::Point3,
 };
 
 pub struct Sphere {
     center: Point3,
     radius: f64,
+    material: Rc<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f64) -> Self {
-        Self { center, radius }
+    pub fn new(center: Point3, radius: f64, material: Rc<dyn Material>) -> Self {
+        Self {
+            center,
+            radius,
+            material,
+        }
     }
 }
 
@@ -42,7 +48,7 @@ impl Hittable for Sphere {
             solution.map(|t| {
                 let point = ray.at(t);
                 let outward_normal = point.subtract(&self.center).divide_constant(self.radius);
-                HitRecord::new(point, outward_normal, t, ray)
+                HitRecord::new(point, outward_normal, t, ray, Rc::clone(&self.material))
             })
         }
     }

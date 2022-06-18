@@ -14,6 +14,7 @@ use crate::{
     camera::Camera,
     color::{Color, MultipleSamplesColor},
     hittable_list::HittableList,
+    material::{Lambertian, Metal},
     sphere::Sphere,
     utils::random_double,
     vec3::{Point3, Vec3},
@@ -30,6 +31,7 @@ mod color;
 mod constants;
 mod hittable;
 mod hittable_list;
+mod material;
 mod ray;
 mod sphere;
 mod utils;
@@ -41,16 +43,17 @@ fn ray_color(ray: &Ray, world: Rc<dyn Hittable>, depth: usize) -> Color {
     }
 
     if let Some(res) = world.hit(ray, 0.001, INFINITY) {
-        let target = res
-            .get_point()
-            .add(&res.get_normal())
-            .add(&random_in_hemisphere(&res.get_normal()));
-        return ray_color(
-            &Ray::new(res.get_point(), target.subtract(&res.get_point())),
-            world,
-            depth - 1,
-        )
-        .divide_constant(2.0);
+        let answer = if let Some(scatter_result) = res.get_material().scatter(ray, &res) {
+            scatter_result.get_color().multiply(&ray_color(
+                scatter_result.get_ray(),
+                world,
+                depth - 1,
+            ))
+        } else {
+            BLACK
+        };
+
+        return answer;
     }
 
     let unit_direction = ray.get_direction().unit_vector();
@@ -62,8 +65,32 @@ fn ray_color(ray: &Ray, world: Rc<dyn Hittable>, depth: usize) -> Color {
 
 fn main() {
     let mut world = HittableList::new();
-    world.add(Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
-    world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
+
+    let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+    let material_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
+    let material_left = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8)));
+    let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2)));
+
+    world.add(Box::new(Sphere::new(
+        Point3::new(0.0, -100.5, -1.0),
+        100.0,
+        material_ground,
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0.0, 0.0, -1.0),
+        0.5,
+        material_center,
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(-1.0, 0.0, -1.0),
+        0.5,
+        material_left,
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(1.0, 0.0, -1.0),
+        0.5,
+        material_right,
+    )));
     let world: Rc<dyn Hittable> = Rc::new(world);
 
     let camera = Camera::new();
