@@ -8,7 +8,7 @@ use color::{BLACK, BLUE, RED, WHITE};
 use constants::INFINITY;
 use hittable::Hittable;
 use ray::Ray;
-use utils::random_in_unit_sphere;
+use utils::{random_in_hemisphere, random_in_unit_sphere, random_unit_vector};
 
 use crate::{
     camera::Camera,
@@ -40,11 +40,11 @@ fn ray_color(ray: &Ray, world: Rc<dyn Hittable>, depth: usize) -> Color {
         return BLACK;
     }
 
-    if let Some(res) = world.hit(ray, 0.0, INFINITY) {
+    if let Some(res) = world.hit(ray, 0.001, INFINITY) {
         let target = res
             .get_point()
             .add(&res.get_normal())
-            .add(&random_in_unit_sphere());
+            .add(&random_in_hemisphere(&res.get_normal()));
         return ray_color(
             &Ray::new(res.get_point(), target.subtract(&res.get_point())),
             world,
