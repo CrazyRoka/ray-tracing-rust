@@ -43,3 +43,16 @@ pub fn random_in_unit_sphere() -> Vec3 {
         }
     }
 }
+
+pub fn refract(unit_direction: &Vec3, normal: &Vec3, refraction_ratio: f64) -> Vec3 {
+    let cos = normal.dot(&unit_direction.negative()).min(1.0);
+    let a = unit_direction
+        .add(&normal.multiply_constant(cos))
+        .multiply_constant(refraction_ratio);
+    let b = normal.multiply_constant(-((1.0 - a.square()).abs().sqrt()));
+    a.add(&b)
+}
+
+pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
+    v.subtract(&n.multiply_constant(v.dot(&n) * 2.0))
+}

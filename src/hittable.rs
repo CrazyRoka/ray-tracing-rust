@@ -14,6 +14,7 @@ pub struct HitRecord {
     normal: Vec3,
     t: f64,
     material: Rc<dyn Material>,
+    front_face: bool,
 }
 
 impl HitRecord {
@@ -35,6 +36,7 @@ impl HitRecord {
             normal,
             t,
             material,
+            front_face,
         }
     }
 
@@ -52,6 +54,10 @@ impl HitRecord {
 
     pub fn get_material(&self) -> Rc<dyn Material> {
         Rc::clone(&self.material)
+    }
+
+    pub fn get_front_face(&self) -> bool {
+        self.front_face
     }
 }
 
