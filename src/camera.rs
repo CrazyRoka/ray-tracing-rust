@@ -1,12 +1,10 @@
 use crate::{
     ray::Ray,
+    utils::degrees_to_radians,
     vec3::{Point3, Vec3},
 };
 
 pub const ASPECT_RATIO: f64 = 16.0 / 9.0;
-const VIEWPORT_HEIGHT: f64 = 2.0;
-const VIEWPORT_WIDTH: f64 = VIEWPORT_HEIGHT * ASPECT_RATIO;
-const FOCAL_LENGTH: f64 = 1.0;
 
 pub struct Camera {
     origin: Point3,
@@ -16,14 +14,24 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new() -> Self {
-        let origin = Point3::empty();
-        let horizontal = Vec3::new(VIEWPORT_WIDTH, 0.0, 0.0);
-        let vertical = Vec3::new(0.0, VIEWPORT_HEIGHT, 0.0);
+    pub fn new(look_from: Point3, look_at: Point3, vup: Vec3, vfow: f64) -> Self {
+        let theta = degrees_to_radians(vfow);
+        let h = (theta / 2.0).tan();
+
+        let viewport_height = 2.0 * h;
+        let viewport_width = ASPECT_RATIO * viewport_height;
+
+        let w = look_from.subtract(&look_at).unit_vector();
+        let u = vup.cross(&w).unit_vector();
+        let v = w.cross(&u);
+
+        let origin = look_from;
+        let horizontal = u.multiply_constant(viewport_width);
+        let vertical = v.multiply_constant(viewport_height);
         let lower_left_corner = origin
             .subtract(&horizontal.divide_constant(2.0))
             .subtract(&vertical.divide_constant(2.0))
-            .subtract(&Vec3::new(0.0, 0.0, FOCAL_LENGTH));
+            .subtract(&w);
 
         Self {
             origin,

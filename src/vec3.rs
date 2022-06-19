@@ -75,6 +75,14 @@ impl Vec3 {
     pub fn near_zero(&self) -> bool {
         self.x.abs() < EPS && self.y.abs() < EPS && self.z.abs() < EPS
     }
+
+    pub fn cross(&self, other: &Vec3) -> Vec3 {
+        Vec3::new(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x,
+        )
+    }
 }
 
 pub type Point3 = Vec3;
