@@ -8,7 +8,7 @@ pub struct HittableList {
 }
 
 impl HittableList {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self { objects: vec![] }
     }
 

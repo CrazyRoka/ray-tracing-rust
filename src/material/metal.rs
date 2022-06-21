@@ -2,7 +2,6 @@ use crate::{
     color::Color,
     ray::Ray,
     utils::{random_in_unit_sphere, reflect},
-    vec3::Vec3,
 };
 
 use super::{Material, ScatterResult};

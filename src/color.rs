@@ -5,7 +5,6 @@ pub type Color = Vec3;
 
 pub const WHITE: Color = Color::new(1.0, 1.0, 1.0);
 pub const BLUE: Color = Color::new(0.5, 0.7, 1.0);
-pub const RED: Color = Color::new(1.0, 0.0, 0.0);
 pub const BLACK: Color = Color::new(0.0, 0.0, 0.0);
 
 pub struct MultipleSamplesColor {
@@ -14,7 +13,7 @@ pub struct MultipleSamplesColor {
 }
 
 impl MultipleSamplesColor {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             color_sum: BLACK,
             samples_count: 0,

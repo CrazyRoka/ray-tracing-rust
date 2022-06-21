@@ -17,6 +17,18 @@ pub fn random_in_range(min: f64, max: f64) -> f64 {
     rng.sample(distribution)
 }
 
+pub fn random_vec3() -> Vec3 {
+    Vec3::new(random_double(), random_double(), random_double())
+}
+
+pub fn random_vec_in_range(min: f64, max: f64) -> Vec3 {
+    Vec3::new(
+        random_in_range(min, max),
+        random_in_range(min, max),
+        random_in_range(min, max),
+    )
+}
+
 pub fn random_unit_vector() -> Vec3 {
     random_in_unit_sphere().unit_vector()
 }
@@ -38,6 +50,15 @@ pub fn random_in_unit_sphere() -> Vec3 {
             random_in_range(-1.0, 1.0),
         );
 
+        if vec3.length() < 1.0 {
+            return vec3;
+        }
+    }
+}
+
+pub fn random_in_unit_disk() -> Vec3 {
+    loop {
+        let vec3 = Vec3::new(random_in_range(-1.0, 1.0), random_in_range(-1.0, 1.0), 0.0);
         if vec3.length() < 1.0 {
             return vec3;
         }

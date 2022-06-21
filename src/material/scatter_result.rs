@@ -6,15 +6,15 @@ pub struct ScatterResult {
 }
 
 impl ScatterResult {
-    pub fn new(color: Color, ray: Ray) -> Self {
+    pub const fn new(color: Color, ray: Ray) -> Self {
         Self { color, ray }
     }
 
-    pub fn get_color(&self) -> Color {
+    pub const fn get_color(&self) -> Color {
         self.color
     }
 
-    pub fn get_ray(&self) -> &Ray {
+    pub const fn get_ray(&self) -> &Ray {
         &self.ray
     }
 }

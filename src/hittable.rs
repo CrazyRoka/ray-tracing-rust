@@ -1,7 +1,4 @@
-use std::{
-    cell::{Cell, RefCell},
-    rc::Rc,
-};
+use std::rc::Rc;
 
 use crate::{
     material::Material,
@@ -40,15 +37,15 @@ impl HitRecord {
         }
     }
 
-    pub fn get_point(&self) -> Point3 {
+    pub const fn get_point(&self) -> Point3 {
         self.point
     }
 
-    pub fn get_normal(&self) -> Vec3 {
+    pub const fn get_normal(&self) -> Vec3 {
         self.normal
     }
 
-    pub fn get_t(&self) -> f64 {
+    pub const fn get_t(&self) -> f64 {
         self.t
     }
 
@@ -56,7 +53,7 @@ impl HitRecord {
         Rc::clone(&self.material)
     }
 
-    pub fn get_front_face(&self) -> bool {
+    pub const fn get_front_face(&self) -> bool {
         self.front_face
     }
 }

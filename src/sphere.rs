@@ -1,4 +1,4 @@
-use std::{ops::RangeBounds, rc::Rc};
+use std::rc::Rc;
 
 use crate::{
     hittable::{HitRecord, Hittable},
@@ -13,7 +13,7 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f64, material: Rc<dyn Material>) -> Self {
+    pub const fn new(center: Point3, radius: f64, material: Rc<dyn Material>) -> Self {
         Self {
             center,
             radius,

@@ -8,7 +8,7 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn empty() -> Self {
+    pub const fn empty() -> Self {
         Self::new(0.0, 0.0, 0.0)
     }
 
@@ -16,15 +16,15 @@ impl Vec3 {
         Self { x, y, z }
     }
 
-    pub fn get_x(&self) -> f64 {
+    pub const fn get_x(&self) -> f64 {
         self.x
     }
 
-    pub fn get_y(&self) -> f64 {
+    pub const fn get_y(&self) -> f64 {
         self.y
     }
 
-    pub fn get_z(&self) -> f64 {
+    pub const fn get_z(&self) -> f64 {
         self.z
     }
 

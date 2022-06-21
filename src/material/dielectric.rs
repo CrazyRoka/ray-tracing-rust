@@ -1,9 +1,8 @@
 use crate::{
     color::WHITE,
-    hittable::{self, HitRecord},
+    hittable::HitRecord,
     ray::Ray,
     utils::{random_double, reflect, refract},
-    vec3::Vec3,
 };
 
 use super::{Material, ScatterResult};
@@ -13,7 +12,7 @@ pub struct Dielectric {
 }
 
 impl Dielectric {
-    pub fn new(refraction_index: f64) -> Self {
+    pub const fn new(refraction_index: f64) -> Self {
         Self { refraction_index }
     }
 }
